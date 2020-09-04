@@ -10,14 +10,17 @@ import UIKit
 
 class HomeViewController: UIViewController {
     
-    private var headerView: UIView!
-    
     @IBOutlet weak var homeTableView: UITableView!
+    @IBOutlet weak var tempLabel: UILabel!
+    @IBOutlet weak var containerTempView: UIView!
+    @IBOutlet weak var topView: UIView!
+    
+    var dataTest = ["1","1","1","1","1","1","1","1"]
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         assignBackground()
         setupTableView()
-        // Do any additional setup after loading the view.
     }
     
     private func assignBackground() {
@@ -33,22 +36,25 @@ class HomeViewController: UIViewController {
     }
     
     private func setupTableView() {
-        //homeTableView.register(UINib(nibName: "HeaderView", bundle: nil), forCellReuseIdentifier: "HeaderView")
         homeTableView.register(UINib(nibName: "WeekDayTableViewCell", bundle: nil), forCellReuseIdentifier: "WeekDayTableViewCell")
+        homeTableView.register(UINib(nibName: "InforDetailTableViewCell", bundle: nil), forCellReuseIdentifier: "InforDetailTableViewCell")
         homeTableView.dataSource = self
-        homeTableView.register(CustomHeaderView.self, forHeaderFooterViewReuseIdentifier: "sectionHeader")
         homeTableView.delegate = self
     }
-    
 }
 
-extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
+extension HomeViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 25
+        return dataTest.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-
+        if indexPath.row == dataTest.count - 1 {
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "InforDetailTableViewCell", for: indexPath) as? InforDetailTableViewCell else {
+                return UITableViewCell()
+            }
+            return cell
+        }
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "WeekDayTableViewCell", for: indexPath) as? WeekDayTableViewCell else {
             return UITableViewCell()
         }
@@ -58,20 +64,30 @@ extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
     }
-    
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let view = tableView.dequeueReusableHeaderFooterView(withIdentifier:
-                    "sectionHeader") as! CustomHeaderView
+}
 
+extension HomeViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let view = CustomHeaderView()
         return view
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return UITableView.automaticDimension
+        return 200
     }
     
-//    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-//         return "Temp"
-//    }
-    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if scrollView.contentOffset.y > 0 {
+            UIView.animate(withDuration: 0.6, delay: 0, options: .curveEaseInOut, animations: {
+                self.containerTempView.isHidden = true
+                self.topView.isHidden = true
+            })
+        }
+        else {
+            UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut, animations: {
+                self.topView.isHidden = false
+                self.containerTempView.isHidden = false
+            })
+        }
+    }
 }

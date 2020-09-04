@@ -10,9 +10,8 @@ import UIKit
 
 class HeaderCollectionViewCell: UICollectionViewCell {
 
+    @IBOutlet weak var timeLabel: UILabel!
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
     }
-
 }
