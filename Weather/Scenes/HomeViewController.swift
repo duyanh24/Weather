@@ -15,6 +15,7 @@ class HomeViewController: UIViewController {
     @IBOutlet weak var containerTempView: UIView!
     @IBOutlet weak var topView: UIView!
     
+    // fake data
     var dataTest = ["1","1","1","1","1","1","1","1"]
     
     override func viewDidLoad() {

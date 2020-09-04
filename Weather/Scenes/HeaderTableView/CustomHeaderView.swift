@@ -17,6 +17,7 @@ class CustomHeaderView: UITableViewHeaderFooterView {
     let headerColectionView:UICollectionView = UICollectionView(frame: CGRect.zero, collectionViewLayout: UICollectionViewFlowLayout.init())
     let layout:UICollectionViewFlowLayout = UICollectionViewFlowLayout.init()
     
+    // fake data
     let dataTest = ["12h", "sunrise", "sunset", "duyanh", "1h", "4h","12h", "sunrise", "sunset", "duyanh", "1h", "4h"]
 
     override init(reuseIdentifier: String?) {
