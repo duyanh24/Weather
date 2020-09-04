@@ -120,6 +120,29 @@
 			path = Application;
 			sourceTree = "<group>";
 		};
+		0899770A250245B300972EA1 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				0899770B250245E200972EA1 /* Model */,
+				0899770C250245E700972EA1 /* Remote */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
+		0899770B250245E200972EA1 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		0899770C250245E700972EA1 /* Remote */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Remote;
+			sourceTree = "<group>";
+		};
 		08E5B7F824FE2AA9006E655A = {
 			isa = PBXGroup;
 			children = (
@@ -144,6 +167,7 @@
 			isa = PBXGroup;
 			children = (
 				089976C92501EC3000972EA1 /* Application */,
+				0899770A250245B300972EA1 /* Data */,
 				08E5B83424FE2BF9006E655A /* Scenes */,
 				08E5B80A24FE2AA9006E655A /* Main.storyboard */,
 				08E5B80D24FE2AAC006E655A /* Assets.xcassets */,
