@@ -10,15 +10,15 @@ import UIKit
 
 class CustomHeaderView: UITableViewHeaderFooterView {
 
-    let topView = UIView()
-    let todayLabel = UILabel()
-    let minTemLabel = UILabel()
-    let maxTemLabel = UILabel()
-    let headerColectionView:UICollectionView = UICollectionView(frame: CGRect.zero, collectionViewLayout: UICollectionViewFlowLayout.init())
-    let layout:UICollectionViewFlowLayout = UICollectionViewFlowLayout.init()
+    private let topView = UIView()
+    private let todayLabel = UILabel()
+    private let minTemLabel = UILabel()
+    private let maxTemLabel = UILabel()
+    private let headerColectionView:UICollectionView = UICollectionView(frame: CGRect.zero, collectionViewLayout: UICollectionViewFlowLayout.init())
+    private let layout:UICollectionViewFlowLayout = UICollectionViewFlowLayout.init()
     
     // fake data
-    let dataTest = ["12h", "sunrise", "sunset", "duyanh", "1h", "4h","12h", "sunrise", "sunset", "duyanh", "1h", "4h"]
+    private let dataTest = ["12h", "sunrise", "sunset", "duyanh", "1h", "4h","12h", "sunrise", "sunset", "duyanh", "1h", "4h"]
 
     override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
@@ -53,12 +53,12 @@ class CustomHeaderView: UITableViewHeaderFooterView {
         
         minTemLabel.textColor = .white
         minTemLabel.text = "25"
-        minTemLabel.font = UIFont(name: "System", size: 19)
+        minTemLabel.font = UIFont.systemFont(ofSize: 19)
         minTemLabel.textColor = UIColor(red: 123/255, green: 185/255, blue: 213/255, alpha: 1)
         
         maxTemLabel.textColor = .white
         maxTemLabel.text = "32"
-        maxTemLabel.font = UIFont(name: "System", size: 19)
+        maxTemLabel.font = UIFont.systemFont(ofSize: 19)
         
         NSLayoutConstraint.activate([
             topView.topAnchor.constraint(equalTo: contentView.topAnchor),
@@ -99,7 +99,7 @@ class CustomHeaderView: UITableViewHeaderFooterView {
 
 extension CustomHeaderView: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        10
+        dataTest.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -113,21 +113,28 @@ extension CustomHeaderView: UICollectionViewDataSource {
 
 extension CustomHeaderView: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let timeLabel = UILabel()
-        let tempLabel = UILabel()
-        timeLabel.text = dataTest[indexPath.row]
-        timeLabel.font = UIFont(name: "System", size: 17)
-        tempLabel.text = "35"
-        tempLabel.font = UIFont(name: "System", size: 20)
-        
-        let widthTimeLabel = timeLabel.intrinsicContentSize.width + 20
-        let widthTempLabel = tempLabel.intrinsicContentSize.width + 20
-        
-        guard let width = [widthTimeLabel, widthTempLabel, 50].max() else { return CGSize() }
+        let width = calculateContentWidthColectionView(index: indexPath.row)
         return CGSize(width: width, height: 150)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 20
+    }
+}
+
+extension CustomHeaderView {
+    func calculateContentWidthColectionView(index: Int) -> CGFloat {
+        let timeLabel = UILabel()
+        let tempLabel = UILabel()
+        timeLabel.text = dataTest[index]
+        timeLabel.font = UIFont.systemFont(ofSize: 17)
+        tempLabel.text = "35"
+        tempLabel.font = UIFont.systemFont(ofSize: 20)
+        
+        let widthTimeLabel = timeLabel.intrinsicContentSize.width + 20
+        let widthTempLabel = tempLabel.intrinsicContentSize.width + 20
+        
+        guard let width = [widthTimeLabel, widthTempLabel, 60].max() else { return .zero }
+        return CGFloat(width)
     }
 }
