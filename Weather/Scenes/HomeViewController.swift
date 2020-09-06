@@ -22,6 +22,13 @@ class HomeViewController: UIViewController {
         super.viewDidLoad()
         assignBackground()
         setupTableView()
+        
+        WeatherServiceAPI.share.fetchDataWeather(input: WeatherRequest(), completion: { result in
+            guard let result = result else {
+                return
+            }
+            print(result)
+        })
     }
     
     private func assignBackground() {
