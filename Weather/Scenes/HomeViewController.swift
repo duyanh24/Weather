@@ -22,6 +22,7 @@ class HomeViewController: UIViewController {
         super.viewDidLoad()
         assignBackground()
         setupTableView()
+        fetchData()
     }
     
     private func assignBackground() {
@@ -41,6 +42,15 @@ class HomeViewController: UIViewController {
         homeTableView.register(UINib(nibName: "InforDetailTableViewCell", bundle: nil), forCellReuseIdentifier: "InforDetailTableViewCell")
         homeTableView.dataSource = self
         homeTableView.delegate = self
+    }
+    
+    private func fetchData() {
+        WeatherAPIService.share.fetchDataWeather(input: WeatherRequest(), completion: { result in
+            guard let result = result else {
+                return
+            }
+            print(result)
+        })
     }
 }
 
