@@ -29,7 +29,7 @@
 		185930BB2504D90D00D188DB /* Daily.swift in Sources */ = {isa = PBXBuildFile; fileRef = 185930BA2504D90D00D188DB /* Daily.swift */; };
 		1872687525051110002964C5 /* Temp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1872687425051110002964C5 /* Temp.swift */; };
 		1872687725051170002964C5 /* FeelsLike.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1872687625051170002964C5 /* FeelsLike.swift */; };
-		1872687925051311002964C5 /* WeatherServiceAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1872687825051311002964C5 /* WeatherServiceAPI.swift */; };
+		1872687925051311002964C5 /* WeatherAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1872687825051311002964C5 /* WeatherAPIService.swift */; };
 		1872687C25052164002964C5 /* URLExtendsion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1872687B25052164002964C5 /* URLExtendsion.swift */; };
 		1872687F250523C8002964C5 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1872687E250523C8002964C5 /* Constants.swift */; };
 		187268812505241A002964C5 /* URLs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 187268802505241A002964C5 /* URLs.swift */; };
@@ -82,7 +82,7 @@
 		185930BA2504D90D00D188DB /* Daily.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Daily.swift; path = Model/Daily.swift; sourceTree = SOURCE_ROOT; };
 		1872687425051110002964C5 /* Temp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Temp.swift; path = Model/Temp.swift; sourceTree = SOURCE_ROOT; };
 		1872687625051170002964C5 /* FeelsLike.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = FeelsLike.swift; path = Model/FeelsLike.swift; sourceTree = SOURCE_ROOT; };
-		1872687825051311002964C5 /* WeatherServiceAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WeatherServiceAPI.swift; path = Model/WeatherServiceAPI.swift; sourceTree = SOURCE_ROOT; };
+		1872687825051311002964C5 /* WeatherAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WeatherAPIService.swift; path = Model/WeatherAPIService.swift; sourceTree = SOURCE_ROOT; };
 		1872687B25052164002964C5 /* URLExtendsion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLExtendsion.swift; sourceTree = "<group>"; };
 		1872687E250523C8002964C5 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		187268802505241A002964C5 /* URLs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLs.swift; sourceTree = "<group>"; };
@@ -170,7 +170,7 @@
 		0899770C250245E700972EA1 /* Remote */ = {
 			isa = PBXGroup;
 			children = (
-				1872687825051311002964C5 /* WeatherServiceAPI.swift */,
+				1872687825051311002964C5 /* WeatherAPIService.swift */,
 				18726882250524E4002964C5 /* WeatherRequest.swift */,
 			);
 			path = Remote;
@@ -408,7 +408,7 @@
 				0813F11824FE44EB000472F2 /* HeaderCollectionViewCell.swift in Sources */,
 				1872687525051110002964C5 /* Temp.swift in Sources */,
 				0813F10D24FE3B1E000472F2 /* WeekDayTableViewCell.swift in Sources */,
-				1872687925051311002964C5 /* WeatherServiceAPI.swift in Sources */,
+				1872687925051311002964C5 /* WeatherAPIService.swift in Sources */,
 				08E5B80724FE2AA9006E655A /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

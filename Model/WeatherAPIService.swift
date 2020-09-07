@@ -8,9 +8,9 @@
 
 import Foundation
 
-class WeatherServiceAPI {
+class WeatherAPIService {
     
-    static let share = WeatherServiceAPI()
+    static let share = WeatherAPIService()
     
     func fetchDataWeather(input: WeatherRequest, completion: @escaping (WeatherRespone?) -> Void){
         guard let url = input.url else {
