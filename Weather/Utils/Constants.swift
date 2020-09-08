@@ -12,4 +12,6 @@ struct Constants {
     static let APIKey = "a2284554eab7134de7fb6f6d9a9fb9f6"
     static let IconSunrise = "a2284554eab7134de7fb6f6d9a9fb9f6"
     static let IconSunset = "a2284554eab7134de7fb6f6d9a9fb9f6"
+    static let BackgroundDay = "Background _Normal"
+    static let BackgroundNight = "Background _Night"
 }

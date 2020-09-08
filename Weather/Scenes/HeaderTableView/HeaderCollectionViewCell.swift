@@ -18,8 +18,8 @@ class HeaderCollectionViewCell: UICollectionViewCell {
         super.awakeFromNib()
     }
     
-    func setupData(hourly: HourlyRespone) {
-        timeLabel.text = Converter.convertDurationTimeToHour(durationTime: hourly.durationTime) + "h"
+    func setupData(hourly: HourlyRespone, timezoneOffset: Int) {
+        timeLabel.text = Converter.convertDurationTimeToHour(durationTime: hourly.durationTime, timezoneOffset: timezoneOffset) + "h"
         tempLabel.text = String(Converter.convertKelvinToCencius(kelvin: hourly.temp)) + "°"
         guard let urlIcon = URLs.getUrlIcon(image: hourly.weather[0].icon) else {
             return
@@ -27,17 +27,17 @@ class HeaderCollectionViewCell: UICollectionViewCell {
         iconImage.downloaded(from: urlIcon)
     }
     
-    func setupDatatest(hourly: Hourly) {
+    func setupDatatest(hourly: Hourly, timezoneOffset: Int) {
         if hourly.sunrise == true {
-            timeLabel.text = Converter.convertDurationTimeToHourMinute(durationTime: hourly.durationTime)
+            timeLabel.text = Converter.convertDurationTimeToHourMinute(durationTime: hourly.durationTime, timezoneOffset: timezoneOffset)
             tempLabel.text = "Sunrise"
             iconImage.image = UIImage(named: "sunrise")
         } else if hourly.sunset == true {
-            timeLabel.text = Converter.convertDurationTimeToHourMinute(durationTime: hourly.durationTime)
+            timeLabel.text = Converter.convertDurationTimeToHourMinute(durationTime: hourly.durationTime, timezoneOffset: timezoneOffset)
             tempLabel.text = "Sunset"
             iconImage.image = UIImage(named: "sunset")
         } else {
-            timeLabel.text = Converter.convertDurationTimeToHour(durationTime: hourly.durationTime) + "h"
+            timeLabel.text = Converter.convertDurationTimeToHour(durationTime: hourly.durationTime, timezoneOffset: timezoneOffset) + "h"
             tempLabel.text = String(Converter.convertKelvinToCencius(kelvin: hourly.temp)) + "°"
             guard let urlIcon = URLs.getUrlIcon(image: hourly.icon) else {
                 return

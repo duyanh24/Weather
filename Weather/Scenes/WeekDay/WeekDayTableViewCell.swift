@@ -25,8 +25,8 @@ class WeekDayTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    func setupData(daily: Daily) {
-        weekdayLabel.text = Converter.convertDurationTimeToWeekday(durationTime: daily.durationTime)
+    func setupData(daily: Daily, timezoneOffset: Int) {
+        weekdayLabel.text = Converter.convertDurationTimeToWeekday(durationTime: daily.durationTime, timezoneOffset: timezoneOffset)
         maxTempLabel.text = String(Converter.convertKelvinToCencius(kelvin: daily.temp.max))
         minTempLabel.text = String(Converter.convertKelvinToCencius(kelvin: daily.temp.min))
         guard let urlIcon = URLs.getUrlIcon(image: daily.weather[0].icon) else {

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreLocation
 
 class HomeViewController: UIViewController {
     
@@ -16,20 +17,27 @@ class HomeViewController: UIViewController {
     @IBOutlet weak var containerTempView: UIView!
     @IBOutlet weak var topView: UIView!
     
-    // fake data
-    private var dataTest = ["1","1","1","1","1","1","1","1"]
     private var weatherRespone: WeatherRespone?
+    private var hourly: [Hourly] = Array()
+    private var checkDayAndNight = 0
+    private var timer = Timer()
+    private let locationManager = CLLocationManager()
+    private var location: CLLocationCoordinate2D?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        assignBackground()
         setupTableView()
-        fetchData()
-        
+        setupLocation()
     }
     
-    private func assignBackground() {
-        let background = UIImage(named: "Background _Normal")
+    // call api every 10 minutes
+    private func scheduledTimer() {
+        fetchData()
+        timer = Timer.scheduledTimer(timeInterval: 600, target: self, selector: #selector(self.fetchData), userInfo: nil, repeats: true)
+    }
+    
+    private func setupBackground(nameImage: String) {
+        let background = UIImage(named: nameImage)
         var imageView : UIImageView!
         imageView = UIImageView(frame: view.bounds)
         imageView.contentMode =  .scaleAspectFill
@@ -47,8 +55,22 @@ class HomeViewController: UIViewController {
         homeTableView.delegate = self
     }
     
-    private func fetchData() {
-        WeatherAPIService.share.fetchDataWeather(input: WeatherRequest(), completion: { result in
+    private func setupLocation() {
+        self.locationManager.requestWhenInUseAuthorization()
+        if CLLocationManager.locationServicesEnabled() {
+            locationManager.delegate = self
+            locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+            locationManager.startMonitoringSignificantLocationChanges()
+            locationManager.requestLocation()
+        }
+    }
+    
+    @objc private func fetchData() {
+        guard let location = location else {
+            self.showToast(message : "Can't get location ")
+            return
+        }
+        WeatherAPIService.share.fetchDataWeather(input: WeatherRequest(location: location), completion: { result in
             guard let result = result else {
                 return
             }
@@ -60,50 +82,49 @@ class HomeViewController: UIViewController {
     private func setupData() {
         DispatchQueue.main.async {
             guard let weatherRespone = self.weatherRespone  else {
+                self.showToast(message : "Can't get location ")
                 return
             }
             self.configData()
             self.locationLabel.text = weatherRespone.timezone
             self.tempLabel.text = String(Converter.convertKelvinToCencius(kelvin: weatherRespone.current.temp)) + "°"
             self.homeTableView.reloadData()
-           
+            if self.checkDayAndNight == 1 {
+                self.setupBackground(nameImage: Constants.BackgroundDay)
+            } else {
+                self.setupBackground(nameImage: Constants.BackgroundNight)
+            }
         }
     }
     
-    var hourly: [Hourly] = Array()
     private func configData(){
         guard let weatherRespone = weatherRespone  else {
             return
         }
         
-        print(Converter.convertDurationTimeToHourMinute2(durationTime: weatherRespone.current.durationTime))
-        print(Converter.convertDurationTimeToHourMinute2(durationTime: weatherRespone.current.sunrise))
-        print(Converter.convertDurationTimeToHourMinute2(durationTime: weatherRespone.current.sunset))
-        print("----")
         for value in weatherRespone.hourly {
             hourly.append(Hourly(durationTime: value.durationTime, sunrise: false, sunset: false, temp: value.temp, icon: value.weather[0].icon))
-            print(Converter.convertDurationTimeToHourMinute2(durationTime: value.durationTime))
+            if Converter.convertDurationTimeToHour(durationTime: value.durationTime, timezoneOffset: weatherRespone.timezoneOffset) == "23" {
+                break
+            }
         }
 
-        print("----")
-        for (index, value) in hourly.enumerated() {
-            if weatherRespone.current.sunrise > value.durationTime {
-                print(Converter.convertDurationTimeToHourMinute2(durationTime: weatherRespone.current.sunrise))
+        for index in 0..<hourly.count-1 {
+            if weatherRespone.current.sunrise > hourly[index].durationTime
+                && weatherRespone.current.sunrise < hourly[index+1].durationTime {
                 hourly.insert(Hourly(durationTime: weatherRespone.current.sunrise, sunrise: true, sunset: false, temp: 0, icon: ""), at: index)
+                checkDayAndNight += 1
                 break
             }
         }
-        print("----")
-        for (index, value) in hourly.enumerated() {
-            if weatherRespone.current.sunset < value.durationTime {
-                print(Converter.convertDurationTimeToHourMinute2(durationTime: weatherRespone.current.sunset))
+        
+        for index in 0..<hourly.count-1 {
+            if weatherRespone.current.sunset > hourly[index].durationTime
+                && weatherRespone.current.sunset < hourly[index+1].durationTime {
                 hourly.insert(Hourly(durationTime: weatherRespone.current.sunset, sunrise: false, sunset: true, temp: 0, icon: ""), at: index)
+                checkDayAndNight += 1
                 break
             }
-        }
-        print("----")
-        for value in hourly {
-            print(Converter.convertDurationTimeToHourMinute2(durationTime: value.durationTime))
         }
     }
 }
@@ -125,13 +146,13 @@ extension HomeViewController: UITableViewDataSource {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "InforDetailTableViewCell", for: indexPath) as? InforDetailTableViewCell else {
                 return UITableViewCell()
             }
-            cell.setupData(current: weatherRespone.current)
+            cell.setupData(current: weatherRespone.current, timezoneOffset: weatherRespone.timezoneOffset)
             return cell
         }
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "WeekDayTableViewCell", for: indexPath) as? WeekDayTableViewCell else {
             return UITableViewCell()
         }
-        cell.setupData(daily: weatherRespone.daily[indexPath.row])
+        cell.setupData(daily: weatherRespone.daily[indexPath.row], timezoneOffset: weatherRespone.timezoneOffset)
         return cell
     }
     
@@ -146,8 +167,8 @@ extension HomeViewController: UITableViewDelegate {
         guard let weatherRespone = weatherRespone  else {
             return UIView()
         }
-        view.dataHourly = weatherRespone.hourly
-        view.dataHourlytest = hourly
+        view.dataHourly = hourly
+        view.timezoneOfset = weatherRespone.timezoneOffset
         view.setupWeekday(durationTimeToday: weatherRespone.current.durationTime)
         return view
     }
@@ -169,5 +190,18 @@ extension HomeViewController: UITableViewDelegate {
                 self.containerTempView.isHidden = false
             })
         }
+    }
+}
+
+extension HomeViewController: CLLocationManagerDelegate {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        guard let locValue: CLLocationCoordinate2D = manager.location?.coordinate else { return }
+        location = locValue
+        scheduledTimer()
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print(error)
+        self.showToast(message : "Can't get location ")
     }
 }

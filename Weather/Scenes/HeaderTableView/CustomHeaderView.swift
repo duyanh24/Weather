@@ -17,10 +17,12 @@ class CustomHeaderView: UITableViewHeaderFooterView {
     private let headerColectionView:UICollectionView = UICollectionView(frame: CGRect.zero, collectionViewLayout: UICollectionViewFlowLayout.init())
     private let layout:UICollectionViewFlowLayout = UICollectionViewFlowLayout.init()
     
-    var dataHourly: [HourlyRespone]?
-    var dataHourlytest: [Hourly]?
-    // fake data
-    private let dataTest = ["12h", "sunrise", "sunset", "duyanh", "1h", "4h","12h", "sunrise", "sunset", "duyanh", "1h", "4h"]
+    var dataHourly: [Hourly]? {
+        didSet {
+            headerColectionView.reloadData()
+        }
+    }
+    var timezoneOfset: Int?
 
     override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
@@ -103,36 +105,26 @@ class CustomHeaderView: UITableViewHeaderFooterView {
     }
     
     func setupWeekday(durationTimeToday: Int) {
-        todayLabel.text = Converter.convertDurationTimeToWeekday(durationTime: durationTimeToday) + " Today"
+        todayLabel.text = Converter.convertDurationTimeToWeekday(durationTime: durationTimeToday, timezoneOffset: timezoneOfset ?? 0) + " Today"
     }
 }
 
 extension CustomHeaderView: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-//        guard let dataHourly = dataHourly else {
-//            return 0
-//        }
-//        return dataHourly.count
-        
-        guard let dataHourlytest = dataHourlytest else {
+        guard let dataHourly = dataHourly else {
             return 0
         }
-        return dataHourlytest.count
+        return dataHourly.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HeaderCollectionViewCell", for: indexPath) as? HeaderCollectionViewCell else {
             return UICollectionViewCell()
         }
-//        guard let dataHourly = dataHourly else {
-//            return UICollectionViewCell()
-//        }
-        guard let dataHourlytest = dataHourlytest else {
+        guard let dataHourly = dataHourly else {
             return UICollectionViewCell()
         }
-        
-        //cell.setupData(hourly: dataHourly[indexPath.row])
-        cell.setupDatatest(hourly: dataHourlytest[indexPath.row])
+        cell.setupDatatest(hourly: dataHourly[indexPath.row], timezoneOffset: timezoneOfset ?? 0)
         return cell
     }
 }
@@ -150,17 +142,24 @@ extension CustomHeaderView: UICollectionViewDelegateFlowLayout {
 
 extension CustomHeaderView {
     func calculateContentWidthColectionView(index: Int) -> CGFloat {
-        let timeLabel = UILabel()
         let tempLabel = UILabel()
-        timeLabel.text = "duy anh"
-        timeLabel.font = UIFont.systemFont(ofSize: 17)
-        tempLabel.text = "35"
+        
+        guard let dataHourly = dataHourly else {
+            return CGFloat()
+        }
+        
+        if dataHourly[index].sunrise == true {
+            tempLabel.text = "Sunrise"
+        } else if dataHourly[index].sunset == true {
+            tempLabel.text = "Sunset"
+        } else {
+            tempLabel.text = "35"
+        }
         tempLabel.font = UIFont.systemFont(ofSize: 20)
         
-        let widthTimeLabel = timeLabel.intrinsicContentSize.width + 20
         let widthTempLabel = tempLabel.intrinsicContentSize.width + 20
         
-        guard let width = [widthTimeLabel, widthTempLabel, 60].max() else { return .zero }
+        guard let width = [widthTempLabel, 60].max() else { return .zero }
         return CGFloat(width)
     }
 }
