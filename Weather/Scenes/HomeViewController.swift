@@ -33,6 +33,7 @@ class HomeViewController: UIViewController {
     // call api every 10 minutes
     private func scheduledTimer() {
         fetchData()
+        timer.invalidate()
         timer = Timer.scheduledTimer(timeInterval: 600, target: self, selector: #selector(self.fetchData), userInfo: nil, repeats: true)
     }
     
@@ -168,7 +169,7 @@ extension HomeViewController: UITableViewDelegate {
             return UIView()
         }
         view.dataHourly = hourly
-        view.timezoneOfset = weatherRespone.timezoneOffset
+        view.timezoneOffset = weatherRespone.timezoneOffset
         view.setupWeekday(durationTimeToday: weatherRespone.current.durationTime)
         return view
     }

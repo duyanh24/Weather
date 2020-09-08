@@ -22,7 +22,7 @@ class CustomHeaderView: UITableViewHeaderFooterView {
             headerColectionView.reloadData()
         }
     }
-    var timezoneOfset: Int?
+    var timezoneOffset: Int?
 
     override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
@@ -105,7 +105,7 @@ class CustomHeaderView: UITableViewHeaderFooterView {
     }
     
     func setupWeekday(durationTimeToday: Int) {
-        todayLabel.text = Converter.convertDurationTimeToWeekday(durationTime: durationTimeToday, timezoneOffset: timezoneOfset ?? 0) + " Today"
+        todayLabel.text = Converter.convertDurationTimeToWeekday(durationTime: durationTimeToday, timezoneOffset: timezoneOffset ?? 0) + " Today"
     }
 }
 
@@ -124,7 +124,7 @@ extension CustomHeaderView: UICollectionViewDataSource {
         guard let dataHourly = dataHourly else {
             return UICollectionViewCell()
         }
-        cell.setupDatatest(hourly: dataHourly[indexPath.row], timezoneOffset: timezoneOfset ?? 0)
+        cell.setupDatatest(hourly: dataHourly[indexPath.row], timezoneOffset: timezoneOffset ?? 0)
         return cell
     }
 }
