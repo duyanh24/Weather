@@ -12,8 +12,8 @@ struct WeatherRequest {
     var query: [String: String]
     var url: URL?
     init() {
-        self.query = ["lat": "33.441792", "lon": "-94.03768", "exclude": "minutely", "appid": Constants.APIKey]
-        if let url = URLs.baseURL?.withQueries(query) {
+        self.query = ["lat": "33.441792", "lon": "-94.037689", "exclude": "minutely", "appid": Constants.APIKey]
+        if let url = URLs.baseURLAPI?.withQueries(query) {
             self.url = url
         }
     }

@@ -11,7 +11,38 @@ import UIKit
 class HeaderCollectionViewCell: UICollectionViewCell {
 
     @IBOutlet weak var timeLabel: UILabel!
+    @IBOutlet weak var iconImage: UIImageView!
+    @IBOutlet weak var tempLabel: UILabel!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
+    }
+    
+    func setupData(hourly: HourlyRespone) {
+        timeLabel.text = Converter.convertDurationTimeToHour(durationTime: hourly.durationTime) + "h"
+        tempLabel.text = String(Converter.convertKelvinToCencius(kelvin: hourly.temp)) + "°"
+        guard let urlIcon = URLs.getUrlIcon(image: hourly.weather[0].icon) else {
+            return
+        }
+        iconImage.downloaded(from: urlIcon)
+    }
+    
+    func setupDatatest(hourly: Hourly) {
+        if hourly.sunrise == true {
+            timeLabel.text = Converter.convertDurationTimeToHourMinute(durationTime: hourly.durationTime)
+            tempLabel.text = "Sunrise"
+            iconImage.image = UIImage(named: "sunrise")
+        } else if hourly.sunset == true {
+            timeLabel.text = Converter.convertDurationTimeToHourMinute(durationTime: hourly.durationTime)
+            tempLabel.text = "Sunset"
+            iconImage.image = UIImage(named: "sunset")
+        } else {
+            timeLabel.text = Converter.convertDurationTimeToHour(durationTime: hourly.durationTime) + "h"
+            tempLabel.text = String(Converter.convertKelvinToCencius(kelvin: hourly.temp)) + "°"
+            guard let urlIcon = URLs.getUrlIcon(image: hourly.icon) else {
+                return
+            }
+            iconImage.downloaded(from: urlIcon)
+        }
     }
 }

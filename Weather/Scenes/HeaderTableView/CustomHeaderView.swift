@@ -17,19 +17,25 @@ class CustomHeaderView: UITableViewHeaderFooterView {
     private let headerColectionView:UICollectionView = UICollectionView(frame: CGRect.zero, collectionViewLayout: UICollectionViewFlowLayout.init())
     private let layout:UICollectionViewFlowLayout = UICollectionViewFlowLayout.init()
     
+    var dataHourly: [HourlyRespone]?
+    var dataHourlytest: [Hourly]?
     // fake data
     private let dataTest = ["12h", "sunrise", "sunset", "duyanh", "1h", "4h","12h", "sunrise", "sunset", "duyanh", "1h", "4h"]
 
     override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
+        setupBackgound()
         setupColectionView()
         configureContents()
-        backgroundView = UIView()
-        backgroundView?.backgroundColor = UIColor(red: 0/255, green: 103/255, blue: 177/255, alpha: 1)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func setupBackgound() {
+        backgroundView = UIView()
+        backgroundView?.backgroundColor = UIColor(red: 0/255, green: 103/255, blue: 177/255, alpha: 1)
     }
     
     private func configureContents() {
@@ -49,15 +55,15 @@ class CustomHeaderView: UITableViewHeaderFooterView {
         topView.backgroundColor = .clear
         
         todayLabel.textColor = .white
-        todayLabel.text = "Tuesday Today"
+        //todayLabel.text = "Tuesday Today"
         
         minTemLabel.textColor = .white
-        minTemLabel.text = "25"
+        //minTemLabel.text = "25"
         minTemLabel.font = UIFont.systemFont(ofSize: 19)
         minTemLabel.textColor = UIColor(red: 123/255, green: 185/255, blue: 213/255, alpha: 1)
         
         maxTemLabel.textColor = .white
-        maxTemLabel.text = "32"
+        //maxTemLabel.text = "32"
         maxTemLabel.font = UIFont.systemFont(ofSize: 19)
         
         NSLayoutConstraint.activate([
@@ -95,18 +101,38 @@ class CustomHeaderView: UITableViewHeaderFooterView {
         headerColectionView.contentInset.right = 10
         headerColectionView.contentInset.left = 10
     }
+    
+    func setupWeekday(durationTimeToday: Int) {
+        todayLabel.text = Converter.convertDurationTimeToWeekday(durationTime: durationTimeToday) + " Today"
+    }
 }
 
 extension CustomHeaderView: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        dataTest.count
+//        guard let dataHourly = dataHourly else {
+//            return 0
+//        }
+//        return dataHourly.count
+        
+        guard let dataHourlytest = dataHourlytest else {
+            return 0
+        }
+        return dataHourlytest.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HeaderCollectionViewCell", for: indexPath) as? HeaderCollectionViewCell else {
             return UICollectionViewCell()
         }
-        cell.timeLabel.text = dataTest[indexPath.row]
+//        guard let dataHourly = dataHourly else {
+//            return UICollectionViewCell()
+//        }
+        guard let dataHourlytest = dataHourlytest else {
+            return UICollectionViewCell()
+        }
+        
+        //cell.setupData(hourly: dataHourly[indexPath.row])
+        cell.setupDatatest(hourly: dataHourlytest[indexPath.row])
         return cell
     }
 }
@@ -126,7 +152,7 @@ extension CustomHeaderView {
     func calculateContentWidthColectionView(index: Int) -> CGFloat {
         let timeLabel = UILabel()
         let tempLabel = UILabel()
-        timeLabel.text = dataTest[index]
+        timeLabel.text = "duy anh"
         timeLabel.font = UIFont.systemFont(ofSize: 17)
         tempLabel.text = "35"
         tempLabel.font = UIFont.systemFont(ofSize: 20)
