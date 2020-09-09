@@ -12,14 +12,16 @@ struct WeatherRespone: Codable {
     var latitude: Double
     var longitude: Double
     var timezone: String
+    var timezoneOffset: Int
     var current: Current
-    var hourly: [Hourly]
+    var hourly: [HourlyRespone]
     var daily: [Daily]
     
     enum CodingKeys: String, CodingKey {
         case latitude = "lat"
         case longitude = "lon"
         case timezone
+        case timezoneOffset = "timezone_offset"
         case current
         case hourly
         case daily
@@ -31,7 +33,8 @@ struct WeatherRespone: Codable {
         self.longitude = try valueContainer.decode(Double.self, forKey: CodingKeys.longitude)
         self.timezone = try valueContainer.decode(String.self, forKey: CodingKeys.timezone)
         self.current = try valueContainer.decode(Current.self, forKey: CodingKeys.current)
-        self.hourly = try valueContainer.decode([Hourly].self, forKey: CodingKeys.hourly)
+        self.hourly = try valueContainer.decode([HourlyRespone].self, forKey: CodingKeys.hourly)
         self.daily = try valueContainer.decode([Daily].self, forKey: CodingKeys.daily)
+        self.timezoneOffset = try valueContainer.decode(Int.self, forKey: CodingKeys.timezoneOffset)
     }
 }

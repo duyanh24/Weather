@@ -17,19 +17,27 @@ class CustomHeaderView: UITableViewHeaderFooterView {
     private let headerColectionView:UICollectionView = UICollectionView(frame: CGRect.zero, collectionViewLayout: UICollectionViewFlowLayout.init())
     private let layout:UICollectionViewFlowLayout = UICollectionViewFlowLayout.init()
     
-    // fake data
-    private let dataTest = ["12h", "sunrise", "sunset", "duyanh", "1h", "4h","12h", "sunrise", "sunset", "duyanh", "1h", "4h"]
+    var dataHourly: [Hourly]? {
+        didSet {
+            headerColectionView.reloadData()
+        }
+    }
+    var timezoneOffset: Int?
 
     override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
+        setupBackgound()
         setupColectionView()
         configureContents()
-        backgroundView = UIView()
-        backgroundView?.backgroundColor = UIColor(red: 0/255, green: 103/255, blue: 177/255, alpha: 1)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func setupBackgound() {
+        backgroundView = UIView()
+        backgroundView?.backgroundColor = UIColor(red: 0/255, green: 103/255, blue: 177/255, alpha: 1)
     }
     
     private func configureContents() {
@@ -49,15 +57,15 @@ class CustomHeaderView: UITableViewHeaderFooterView {
         topView.backgroundColor = .clear
         
         todayLabel.textColor = .white
-        todayLabel.text = "Tuesday Today"
+        //todayLabel.text = "Tuesday Today"
         
         minTemLabel.textColor = .white
-        minTemLabel.text = "25"
+        //minTemLabel.text = "25"
         minTemLabel.font = UIFont.systemFont(ofSize: 19)
         minTemLabel.textColor = UIColor(red: 123/255, green: 185/255, blue: 213/255, alpha: 1)
         
         maxTemLabel.textColor = .white
-        maxTemLabel.text = "32"
+        //maxTemLabel.text = "32"
         maxTemLabel.font = UIFont.systemFont(ofSize: 19)
         
         NSLayoutConstraint.activate([
@@ -95,18 +103,28 @@ class CustomHeaderView: UITableViewHeaderFooterView {
         headerColectionView.contentInset.right = 10
         headerColectionView.contentInset.left = 10
     }
+    
+    func setupWeekday(durationTimeToday: Int) {
+        todayLabel.text = Converter.convertDurationTimeToWeekday(durationTime: durationTimeToday, timezoneOffset: timezoneOffset ?? 0) + " Today"
+    }
 }
 
 extension CustomHeaderView: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        dataTest.count
+        guard let dataHourly = dataHourly else {
+            return 0
+        }
+        return dataHourly.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HeaderCollectionViewCell", for: indexPath) as? HeaderCollectionViewCell else {
             return UICollectionViewCell()
         }
-        cell.timeLabel.text = dataTest[indexPath.row]
+        guard let dataHourly = dataHourly else {
+            return UICollectionViewCell()
+        }
+        cell.setupDatatest(hourly: dataHourly[indexPath.row], timezoneOffset: timezoneOffset ?? 0)
         return cell
     }
 }
@@ -124,17 +142,24 @@ extension CustomHeaderView: UICollectionViewDelegateFlowLayout {
 
 extension CustomHeaderView {
     func calculateContentWidthColectionView(index: Int) -> CGFloat {
-        let timeLabel = UILabel()
         let tempLabel = UILabel()
-        timeLabel.text = dataTest[index]
-        timeLabel.font = UIFont.systemFont(ofSize: 17)
-        tempLabel.text = "35"
+        
+        guard let dataHourly = dataHourly else {
+            return CGFloat()
+        }
+        
+        if dataHourly[index].sunrise == true {
+            tempLabel.text = "Sunrise"
+        } else if dataHourly[index].sunset == true {
+            tempLabel.text = "Sunset"
+        } else {
+            tempLabel.text = "35"
+        }
         tempLabel.font = UIFont.systemFont(ofSize: 20)
         
-        let widthTimeLabel = timeLabel.intrinsicContentSize.width + 20
         let widthTempLabel = tempLabel.intrinsicContentSize.width + 20
         
-        guard let width = [widthTimeLabel, widthTempLabel, 60].max() else { return .zero }
+        guard let width = [widthTempLabel, 60].max() else { return .zero }
         return CGFloat(width)
     }
 }
